@@ -1,18 +1,14 @@
 import app.services.user as user
+import app.routers as routers
+
 from fastapi import FastAPI
-from app.routers.noticias import app as noticias_router
-#quitar despues
 from app.services.sections import *
-from app.services.noticias import *
+from app.services.posts import *
 
 
-app = FastAPI()
-app.include_router(noticias_router)
-print(getIdSectionByName("Viajes"))
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
-
+app = FastAPI(tags=["Main"])
+app.include_router(routers.posts_router)
+app.include_router(routers.admin_router)
 
 
 
