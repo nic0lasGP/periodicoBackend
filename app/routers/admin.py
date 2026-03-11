@@ -18,14 +18,17 @@ async def get_allposts():
 async def alternate_publish(id:int):
     try:
         new_state = publishState(id)
-
-        if new_state == 1:
+            
+        if new_state == 0:
+            print("error aqui")
             publishPost(id)
-            return {"status": "ok", "message": "Post publicado correctamente"}
-        else:
-            unPublishPost(id)
 
-            return {"status": "ok", "message": "Post despublicado correctamente"}
+            return {"status": new_state, "message": "Post publicado correctamente"}
+        else:
+            print("error aqui")
+            unPublishPost(id)
+        
+            return {"status": new_state, "message": "Post despublicado correctamente"}
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -33,29 +36,7 @@ async def alternate_publish(id:int):
 
 
 
-@app.put("/admin/publicar")
-async def publish(id:int):
-
-    try:
-
-        
-        publishPost(id)
-        return {"status": "ok", "message": "Post publicado correctamente"}
-    except Exception as e:
-        return HTTPException(status_code=500, detail=str(e))
-
-
-@app.put("/admin/despublicar")
-async def unpublish(id:int):
-
-    try:
-        unPublishPost(id)
-        return {"status": "ok", "message": "Post despublicado correctamente"}
-    except Exception as e:
-        return HTTPException(status_code=500, detail=str(e))
-    
-
-@app.put("/admin/borrar")
+@app.delete("/admin/borrar")
 async def remove_post(id:int):
 
     try:

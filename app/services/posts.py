@@ -39,7 +39,7 @@ def getPostbyId(id:int):
                 cursor.execute(
                     "SELECT * FROM posts WHERE id = %s ",(id)
                 )
-                results = cursor.fetchaone()
+                results = cursor.fetchone()
                 return results
 
 
@@ -63,17 +63,20 @@ def createPost(title:str,body:json,user_id:int,section_id:int,slug:str):
         raise e
 
 
-def publishState(post_id:int):
-    try:
-        with get_connection() as connection:
-                with connection.cursor() as cursor:
-                    cursor.execute(
-                        """SELECT published FROM posts WHERE id = %s """,(post_id)
-                    )
-                    results = cursor.fetchaone()
-                    return results
-    except Exception as e:
-         raise e
+def publishState(post_id: int):
+    with get_connection() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "SELECT published FROM posts WHERE id = %s",
+                (post_id,)
+            )
+            result = cursor.fetchone()
+
+            if result is None:
+                return None  # No existe el post
+
+            return result["published"]
+
 
 
 def publishPost(post_id:int):
@@ -86,7 +89,7 @@ def publishPost(post_id:int):
                         SET published = 1
                         WHERE id = %s;
                         """,
-                        (post_id)
+                        (post_id,)
 
                     )
                     connection.commit()           
@@ -105,7 +108,7 @@ def unPublishPost(post_id:int):
                         SET published = 0
                         WHERE id = %s;
                         """,
-                        (post_id)
+                        (post_id,)
 
                     )
                     connection.commit()        
