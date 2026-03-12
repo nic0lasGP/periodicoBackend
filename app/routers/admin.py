@@ -7,7 +7,6 @@ app = APIRouter(tags=['Admin'])
 
 
 
-###Mirar si hace falta juntar estas 3 endpoints en uno 
 
 
 @app.patch("/admin/alternate-publish-state-post")
@@ -40,7 +39,6 @@ async def delete_post(id:int):
         return {"status": "ok", "message": "Post borrado correctamente"}
     except Exception as e:
         return HTTPException(status_code=500, detail=str(e))
-###
 
 
 

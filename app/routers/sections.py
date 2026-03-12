@@ -5,6 +5,7 @@ from app.models.admin import PostCreate
 
 app = APIRouter(tags=['Sections'])
 
+
 @app.get("/sections/get-all")
 async def get_all_sections():
     results = getAllSections()

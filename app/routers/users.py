@@ -1,11 +1,19 @@
-from fastapi import APIRouter,HTTPException
+from fastapi import APIRouter,HTTPException,Depends
 from app.services import createUser,getUserByGmail,getUserById,deleteUserbyId,changePassword
 from app.security.encrypt_passwords import verifyPassword,hashPassword
 from app.security.validates import validatePassword
+from fastapi.security import OAuth2PasswordRequestForm
+from app.security import createAccessToken,getCurrentUser
 
 
 
 app = APIRouter(tags=['Users'])
+
+
+
+@app.get("/users/me")
+def get_me(current_user: dict = Depends(getCurrentUser)):
+    return current_user
 
 @app.post("/users/register")
 async def register_User(username:str,password:str,gmail:str):
@@ -42,19 +50,30 @@ async def get_info_user_by_gmail(gmail:int):
 @app.post("/users/login")
 async def loginUser(gmail:str,password:str):
 
+  
+    
     user = getUserByGmail(gmail)
 
     if user is None:
         raise HTTPException(status_code=404, detail="El correo no está registrado")
 
 
-    if not verifyPassword(password, user["password"]):
+    if not verifyPassword(password , user["password"]):
         raise HTTPException(status_code=401, detail="Contraseña incorrecta")
 
 
+    token_data = {
+        "id": user["id"],
+        "gmail": user["gmail"],
+        "username": user["username"],
+        "admin": user["admin"]
+    }
+
+    access_token = createAccessToken(token_data)
     return {
         "status": "ok",
         "message": "Login correcto",
+        "token":access_token,   
         "user": {
             "id": user["id"],
             "username": user["username"],
