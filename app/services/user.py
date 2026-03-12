@@ -1,8 +1,9 @@
 import pymysql
-from app.util.connector import get_connection
+from app.util.database import get_connection
 from app.security.validates import validatePassword
 from app.security.encrypt_passwords import hash_password
 ##TERMINAR FUNCIONES RESTANTES
+
 
 def getAllUsers():
         with get_connection() as connection:

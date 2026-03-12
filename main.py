@@ -13,12 +13,6 @@ app = FastAPI(tags=["Main"])
 app.include_router(routers.posts_router)
 app.include_router(routers.admin_router)
 app.include_router(routers.users_router)
-
-
-
-@app.get("/User/{id}")
-async def get_post(id: int):
-    show = user.getUserById(id)
-    return {"show":show}
+app.include_router(routers.sections_router)
 
 

@@ -1,4 +1,4 @@
-from app.util.connector import get_connection
+from app.util.database import get_connection
 import json
 import app.services as init
 
@@ -7,7 +7,7 @@ def getAllPost():
         with get_connection() as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "SELECT * FROM posts"
+                    "SELECT * FROM posts ORDER BY created_at DESC"
                 )
                 results = cursor.fetchall()
                 return results
@@ -17,7 +17,7 @@ def getPostbySectionId(seccion_id:int):
         with get_connection() as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "SELECT * FROM posts WHERE section_id = %s ",(seccion_id,)
+                    "SELECT * FROM posts WHERE section_id = %s ORDER BY created_at DESC",(seccion_id,)
                 )
                 results = cursor.fetchall()
                 return results

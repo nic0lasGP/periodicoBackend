@@ -1,5 +1,6 @@
 from fastapi import APIRouter,HTTPException
 from app.services.posts import *
+from app.services.sections import *
 from app.models.admin import PostCreate
 
 
@@ -8,13 +9,9 @@ app = APIRouter(tags=['Admin'])
 
 
 ###Mirar si hace falta juntar estas 3 endpoints en uno 
-@app.get("/admin-hub-posts")
-async def get_allposts():
-    results = getAllPost()
-    return results
 
 
-@app.patch("/admin/alternar-publicar")
+@app.patch("/admin/alternate-publish-state-post")
 async def alternate_publish(id:int):
     try:
         new_state = publishState(id)
@@ -36,8 +33,8 @@ async def alternate_publish(id:int):
 
 
 
-@app.delete("/admin/borrar")
-async def remove_post(id:int):
+@app.delete("/admin/delete-post")
+async def delete_post(id:int):
 
     try:
         deletePost(id)
@@ -48,7 +45,7 @@ async def remove_post(id:int):
 
 
 
-@app.post("/admin/crear-noticia")
+@app.post("/admin/create-post")
 async def create_post(data: PostCreate):
     body_json = data.body.model_dump_json()
     
@@ -63,3 +60,30 @@ async def create_post(data: PostCreate):
         return {"status": "ok", "message": "Post creado correctamente"}
     except Exception as e:
         return HTTPException(status_code=500, detail=str(e))
+    
+
+
+@app.post("/admin/create-section")
+async def create_section(name:str):
+
+    new_id = createSection(name)
+
+    return {
+        "status": "ok",
+        "message": "Sección creada correctamente",
+        "id": new_id
+    }
+
+@app.delete("/admin/delete-section")
+async def delete_section(section_id: int):
+
+    deleted = deleteSection(section_id)
+
+    if deleted == 0:
+        raise HTTPException(status_code=404, detail="La sección no existe")
+
+    return {
+        "status": "ok",
+        "message": f"Sección con ID {section_id} eliminada correctamente"
+    }
+

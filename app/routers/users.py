@@ -6,7 +6,7 @@ from app.security.encrypt_passwords import verify_password
 
 app = APIRouter(tags=['Users'])
 
-@app.post("/usuarios/registrar")
+@app.post("/users/register")
 async def register_User(username:str,password:str,gmail:str):
     try:
         createUser(username,password,gmail)
@@ -15,7 +15,7 @@ async def register_User(username:str,password:str,gmail:str):
         return HTTPException(status_code=500, detail=str(e))
 
 
-@app.get("/usuario/get")
+@app.get("/users/get-by-id")
 async def get_info_user_by_id(id:int):
     try:
         
@@ -26,7 +26,7 @@ async def get_info_user_by_id(id:int):
         return HTTPException(status_code=500, detail=str(e))
 
 
-@app.post("/usuarios/login")
+@app.post("/users/login")
 async def loginUser(gmail:str,password:str):
 
     user = getUserByGmail(gmail)
@@ -49,7 +49,7 @@ async def loginUser(gmail:str,password:str):
         }
     }
 
-@app.delete("/usuarios/delete")
+@app.delete("/users/delete")
 async def deleteUser(gmail:str,password:str):
 
 
@@ -67,8 +67,8 @@ async def deleteUser(gmail:str,password:str):
     if not verify_password(password, user["password"]):
         raise HTTPException(status_code=401, detail="Contraseña incorrecta")
 
-    # 3. Eliminar usuario
-    deleted = deleteUserbyId(gmail)
+    # 3. Eliminar usuario 
+    deleted = deleteUserbyId(user["id"])
 
     if deleted == 0:
         raise HTTPException(status_code=500, detail="No se pudo eliminar el usuario")
