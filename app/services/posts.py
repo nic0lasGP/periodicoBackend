@@ -1,6 +1,6 @@
-from app.util.database import get_connection
+from app.util import get_connection
 import json
-import app.services as init
+
 
 
 def getAllPost():
@@ -79,39 +79,20 @@ def publishState(post_id: int):
 
 
 
-def publishPost(post_id:int):
+def publishAlternate(post_id:int,state:int):
     try:
         with get_connection() as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
                         """
                         UPDATE posts
-                        SET published = 1
+                        SET published = %s
                         WHERE id = %s;
                         """,
-                        (post_id,)
+                        (state,post_id,)
 
                     )
                     connection.commit()           
-                    return True
-    except Exception as e:
-         raise e
-    
-
-def unPublishPost(post_id:int):
-    try:
-        with get_connection() as connection:
-                with connection.cursor() as cursor:
-                    cursor.execute(
-                        """
-                        UPDATE posts
-                        SET published = 0
-                        WHERE id = %s;
-                        """,
-                        (post_id,)
-
-                    )
-                    connection.commit()        
                     return True
     except Exception as e:
          raise e

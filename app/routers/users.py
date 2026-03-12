@@ -1,6 +1,7 @@
 from fastapi import APIRouter,HTTPException
-from app.services.user import createUser,getUserByGmail,getUserById,deleteUserbyId
-from app.security.encrypt_passwords import verify_password
+from app.services import createUser,getUserByGmail,getUserById,deleteUserbyId,changePassword
+from app.security.encrypt_passwords import verifyPassword,hashPassword
+from app.security.validates import validatePassword
 
 
 
@@ -24,6 +25,18 @@ async def get_info_user_by_id(id:int):
         return resultado
     except Exception as e:
         return HTTPException(status_code=500, detail=str(e))
+    
+
+@app.get("/users/get-by-gmail")
+async def get_info_user_by_gmail(gmail:int):
+    try:
+        
+        resultado = getUserByGmail(gmail)
+        
+        return resultado
+    except Exception as e:
+        return HTTPException(status_code=500, detail=str(e))
+
 
 
 @app.post("/users/login")
@@ -35,7 +48,7 @@ async def loginUser(gmail:str,password:str):
         raise HTTPException(status_code=404, detail="El correo no está registrado")
 
 
-    if not verify_password(password, user["password"]):
+    if not verifyPassword(password, user["password"]):
         raise HTTPException(status_code=401, detail="Contraseña incorrecta")
 
 
@@ -64,7 +77,7 @@ async def deleteUser(gmail:str,password:str):
         raise HTTPException(status_code=404, detail="El correo no está registrado")
     
     # 2. Verificar contraseña
-    if not verify_password(password, user["password"]):
+    if not verifyPassword(password, user["password"]):
         raise HTTPException(status_code=401, detail="Contraseña incorrecta")
 
     # 3. Eliminar usuario 
@@ -76,4 +89,39 @@ async def deleteUser(gmail:str,password:str):
     return {
         "status": "ok",
         "message": f"Usuario '{gmail}' eliminado correctamente"
+    }
+
+
+#expandir en un futuro 
+@app.patch("/admin/change-password")
+async def change_password(gmail:str,old_password:str,new_password:str):
+
+    if not gmail or not old_password or not new_password:
+        raise HTTPException(status_code=400, detail="Faltan campos obligatorios")
+
+    # 1. Obtener usuario por gmail
+    user = getUserByGmail(gmail)
+
+    if not user:
+        raise HTTPException(status_code=404, detail="El usuario no existe")
+
+    # 2. Verificar contraseña actual
+    if not verifyPassword(old_password, user["password"]):
+        raise HTTPException(status_code=401, detail="La contraseña actual es incorrecta")
+
+    if not validatePassword(new_password):
+        raise HTTPException(status_code=401, detail="La nueva contraseña esta en un formato incorrecto")
+    
+    hashed_password = hashPassword(new_password)
+    if verifyPassword(old_password,hashed_password):
+        raise HTTPException(status_code=401, detail="Las contraseña es la misma")
+    # 3. Cambiar contraseña usando tu función
+    updated = changePassword(user["id"], hashed_password)
+
+    if not updated:
+        raise HTTPException(status_code=500, detail="No se pudo actualizar la contraseña")
+
+    return {
+        "status": "ok",
+        "message": "Contraseña actualizada correctamente"
     }

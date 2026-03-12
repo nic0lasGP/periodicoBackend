@@ -1,6 +1,5 @@
 from fastapi import APIRouter,HTTPException
-from app.services.posts import *
-from app.services.sections import *
+from app.services import *
 from app.models.admin import PostCreate
 
 

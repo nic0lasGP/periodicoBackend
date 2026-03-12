@@ -9,12 +9,20 @@ __all__ = [
     "getExactPost",
     "getPostbyId",
     "createPost",
-    "publishPost",
-    "unPublishPost",
+    "publishState",
+    "publishAlternate",
     "deletePost",
     "getAllSections",
     "getIdSectionByName",
+    "getSectionById",
+    "deleteSection",
+    "createSection",
     "getAllUsers",
     "getUserById",
-    "getUserByName"
+    "getUserByName",
+    "getUserByGmail",
+    "getUserById",
+    "createUser",
+    "deleteUserbyId",
+    "changePassword"
            ]

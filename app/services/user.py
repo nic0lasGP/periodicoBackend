@@ -1,8 +1,7 @@
 import pymysql
-from app.util.database import get_connection
-from app.security.validates import validatePassword
-from app.security.encrypt_passwords import hash_password
-##TERMINAR FUNCIONES RESTANTES
+from app.util import get_connection
+from app.security import validatePassword,hashPassword
+
 
 
 def getAllUsers():
@@ -40,6 +39,8 @@ def getUserByName(name: str):
                
                 ## print(results)
                 return results
+            
+
 def getUserByGmail(gmail:str):
     with get_connection() as connection:
         with connection.cursor() as cursor:
@@ -50,6 +51,8 @@ def getUserByGmail(gmail:str):
             results = cursor.fetchone()
 
             return results
+        
+
 def getUserById(id:int):
     with get_connection() as connection:
         with connection.cursor() as cursor:
@@ -61,13 +64,13 @@ def getUserById(id:int):
 
             return results  
 
+
 ## POR CAMBIAR !!!!!!!!!!!!!!!!!!! añadir verificacion de gmails  
 def createUser(username:str,password:str,gmail:str):
     
     if not validatePassword(password):
-        print("La contraseña no cumple los requisitos")
-        return None
-    hashed_password = hash_password(password)
+        raise Exception("La contraseña no cumple los requisitos")
+    hashed_password = hashPassword(password)
     with get_connection() as connection:
         with connection.cursor() as cursor:
             cursor.execute(
@@ -78,6 +81,8 @@ def createUser(username:str,password:str,gmail:str):
             results = cursor.fetchone()
                            
             return results
+        
+
 def deleteUserbyId(id: int):
     try:
         with get_connection() as connection:
@@ -97,4 +102,25 @@ def deleteUserbyId(id: int):
         print("Error", e)
         raise e
 
+
+
+def changePassword(id:int,new_password:str):
+    try:
+        with get_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """
+                    UPDATE users
+                    SET password = %s
+                    WHERE id = %s ;
+                    """,
+                    (new_password,id,)
+                )
+
+            connection.commit()
+            return cursor.rowcount > 0  # True si se eliminó algo
+
+    except Exception as e:
+        print("Error", e)
+        raise e
 

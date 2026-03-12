@@ -1,6 +1,5 @@
 from fastapi import APIRouter
-from app.services.sections import *
-from app.services.posts import *
+from app.services import *
 
 
 app = APIRouter(tags=['Noticias'])

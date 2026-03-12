@@ -22,3 +22,4 @@ def emailIsValid(email: str) -> bool:
         return True  # Dominio válido y puede recibir correos
     except:
         return False  # Dominio inexistente o sin MX
+

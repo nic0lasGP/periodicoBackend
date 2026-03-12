@@ -1,6 +1,5 @@
 from fastapi import APIRouter,HTTPException
-from app.services.posts import *
-from app.services.sections import *
+from app.services import *
 from app.models.admin import PostCreate
 
 
@@ -18,12 +17,12 @@ async def alternate_publish(id:int):
             
         if new_state == 0:
             print("error aqui")
-            publishPost(id)
+            publishAlternate(id,1)
 
             return {"status": new_state, "message": "Post publicado correctamente"}
         else:
             print("error aqui")
-            unPublishPost(id)
+            publishAlternate(id,0)
         
             return {"status": new_state, "message": "Post despublicado correctamente"}
 
@@ -62,7 +61,6 @@ async def create_post(data: PostCreate):
         return HTTPException(status_code=500, detail=str(e))
     
 
-
 @app.post("/admin/create-section")
 async def create_section(name:str):
 
@@ -73,6 +71,7 @@ async def create_section(name:str):
         "message": "Sección creada correctamente",
         "id": new_id
     }
+
 
 @app.delete("/admin/delete-section")
 async def delete_section(section_id: int):
@@ -86,4 +85,6 @@ async def delete_section(section_id: int):
         "status": "ok",
         "message": f"Sección con ID {section_id} eliminada correctamente"
     }
+
+
 

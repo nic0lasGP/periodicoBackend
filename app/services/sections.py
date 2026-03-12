@@ -1,5 +1,5 @@
 import pymysql
-from app.util.database import get_connection
+from app.util import get_connection
 
 def getAllSections():
         with get_connection() as connection:
