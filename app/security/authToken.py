@@ -2,12 +2,14 @@ from jose import JWTError, jwt
 from datetime import datetime, timedelta
 from fastapi import Depends, HTTPException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials,OAuth2PasswordBearer
-SECRET_KEY = "tokenpayo"  # cámbiala por una segura
+SECRET_KEY = "token"  # cámbiala por una segura
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
+
 #oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/users/login")
 bearer_scheme = HTTPBearer() 
+
 
 def createAccessToken(data: dict):
     to_encode = data.copy()
@@ -27,7 +29,8 @@ def getCurrentUser(token: str = Depends(bearer_scheme)):
         return payload
     except JWTError as e:
         print(e)
-        raise HTTPException(status_code=401, detail="e")
+        raise HTTPException(status_code=401, detail="Token inválido o expirado")
+
 
 def requireAdmin(current_user: dict = Depends(getCurrentUser)):
     if not current_user.get("admin"):

@@ -7,6 +7,7 @@ def validatePassword(password: str) -> bool:
     return bool(re.match(pattern, password))
 
 
+#Hacer funcionar!!
 def emailIsValid(email: str) -> bool:
     # 1. Validar formato del email
     try:

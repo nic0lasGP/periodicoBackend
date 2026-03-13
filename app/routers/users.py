@@ -15,6 +15,7 @@ app = APIRouter(tags=['Users'])
 def get_me(current_user: dict = Depends(getCurrentUser)):
     return current_user
 
+
 @app.post("/users/register")
 async def register_User(username:str,password:str,gmail:str):
     try:
@@ -81,38 +82,31 @@ async def loginUser(gmail:str,password:str):
         }
     }
 
-@app.delete("/users/delete")
-async def deleteUser(gmail:str,password:str):
 
 
 
-    if not gmail or not password:
-        raise HTTPException(status_code=400, detail="gmail y password son obligatorios")
 
-    # 1. Buscar usuario
-    user = getUserByGmail(gmail)
-    print(user)
-    if user is None:
-        raise HTTPException(status_code=404, detail="El correo no está registrado")
+@app.delete("/users/delete-me")
+def delete_me(current_user: dict = Depends(getCurrentUser)):
     
-    # 2. Verificar contraseña
-    if not verifyPassword(password, user["password"]):
-        raise HTTPException(status_code=401, detail="Contraseña incorrecta")
+    
+    if deleteUserbyId(current_user["id"]) == 1:
 
-    # 3. Eliminar usuario 
-    deleted = deleteUserbyId(user["id"])
+        return {
+            "status": "ok",
+            "message": f"Usuario '{current_user["id"]}' eliminado correctamente"
+        }
+    else:
+        return {
+        "status": "error",
+        "message": "No se consiguio eliminar ningun usuario"
+        }
 
-    if deleted == 0:
-        raise HTTPException(status_code=500, detail="No se pudo eliminar el usuario")
-
-    return {
-        "status": "ok",
-        "message": f"Usuario '{gmail}' eliminado correctamente"
-    }
+    
 
 
 #expandir en un futuro 
-@app.patch("/admin/change-password")
+@app.patch("/users/change-password")
 async def change_password(gmail:str,old_password:str,new_password:str):
 
     if not gmail or not old_password or not new_password:

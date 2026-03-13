@@ -3,6 +3,7 @@ from app.services.posts import *
 from app.services.sections import *
 from app.services.user import *
 
+
 __all__ = [
     "getAllPost",
     "getPostbySectionId",
@@ -24,5 +25,6 @@ __all__ = [
     "getUserById",
     "createUser",
     "deleteUserbyId",
-    "changePassword"
+    "changePassword",
+    "getSectionByName"
            ]

@@ -16,3 +16,9 @@ async def get_all_sections():
 async def get_section_by_id(id:int):
     results = getSectionById(id)
     return results
+
+
+@app.get("/sections/get-by-name")
+async def get_section_by_name(name:str):
+    results = getSectionByName(name)
+    return results

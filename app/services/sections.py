@@ -1,6 +1,7 @@
 import pymysql
 from app.util import get_connection
 
+
 def getAllSections():
         with get_connection() as connection:
             with connection.cursor() as cursor:
@@ -26,6 +27,16 @@ def getSectionById(id:int):
             with connection.cursor() as cursor:
                 cursor.execute(
                     "SELECT * FROM sections WHERE id = %s ",(id,)
+                )
+                results = cursor.fetchone()
+                return results
+            
+
+def getSectionByName(name:str):
+     with get_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "SELECT * FROM sections WHERE name = %s ",(name,)
                 )
                 results = cursor.fetchone()
                 return results
