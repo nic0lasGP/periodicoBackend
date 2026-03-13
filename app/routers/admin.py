@@ -59,6 +59,14 @@ async def create_post(data: PostCreate,current_user: dict = Depends(requireAdmin
         return HTTPException(status_code=500, detail=str(e))
     
 
+@app.patch("/admin/update-post")
+def update_post(post_id: int, title: str, slug: str, body: dict, section_id: int,current_user: dict = Depends(requireAdmin)):
+    result = updatePost(post_id, title, body, section_id, slug)
+    if not result:
+        raise HTTPException(404, "Post no encontrado")
+    return {"message": "Post actualizado correctamente"}
+    
+
 @app.post("/admin/create-section")
 async def create_section(name:str,current_user: dict = Depends(requireAdmin)):
 

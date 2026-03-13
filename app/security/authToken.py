@@ -4,7 +4,7 @@ from fastapi import Depends, HTTPException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials,OAuth2PasswordBearer
 SECRET_KEY = "token"  # cámbiala por una segura
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+ACCESS_TOKEN_EXPIRE_MINUTES = 24
 
 
 #oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/users/login")
@@ -13,7 +13,7 @@ bearer_scheme = HTTPBearer()
 
 def createAccessToken(data: dict):
     to_encode = data.copy()
-    expire = datetime.now() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    expire = datetime.now() + timedelta(hours=ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode.update({"exp": expire})
     token = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     

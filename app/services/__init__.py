@@ -2,6 +2,7 @@
 from app.services.posts import * 
 from app.services.sections import *
 from app.services.user import *
+from app.services.media import *
 
 
 __all__ = [
@@ -26,5 +27,9 @@ __all__ = [
     "createUser",
     "deleteUserbyId",
     "changePassword",
-    "getSectionByName"
+    "getSectionByName",
+    "updatePost",
+    "uploadVideo",
+    "getVideosByPost",
+    "getVideosById"
            ]

@@ -63,6 +63,24 @@ def createPost(title:str,body:json,user_id:int,section_id:int,slug:str):
         raise e
 
 
+def updatePost(post_id: int, title: str, body: json, section_id: int, slug: str):
+    try:
+        with get_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """
+                    UPDATE posts 
+                    SET title = %s, slug = %s, body = %s, section_id = %s
+                    WHERE id = %s
+                    """,
+                    (title, slug, body, section_id, post_id)
+                )
+                connection.commit()
+                return cursor.rowcount > 0
+    except Exception as e:
+        raise e
+    
+
 def publishState(post_id: int):
     with get_connection() as connection:
         with connection.cursor() as cursor:
