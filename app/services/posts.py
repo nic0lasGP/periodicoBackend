@@ -44,7 +44,7 @@ def getPostbyId(id:int):
 
 
 ## Mirar si se recibe el slug o hay que crearlo automaticamente 
-def createPost(title:str,body:json,user_id:int,section_id:int,slug:str):
+def createPost(title:str,body:dict,user_id:int,section_id:int,slug:str):
 
     try:
         with get_connection() as connection:
@@ -63,7 +63,7 @@ def createPost(title:str,body:json,user_id:int,section_id:int,slug:str):
         raise e
 
 
-def updatePost(post_id: int, title: str, body: json, section_id: int, slug: str):
+def updatePost(post_id: int, title: str, body: dict, section_id: int, slug: str):
     try:
         with get_connection() as connection:
             with connection.cursor() as cursor:

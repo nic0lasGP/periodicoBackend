@@ -60,3 +60,10 @@ def get_video(video_id: int):
             "Accept-Ranges": "bytes"
         }
     )
+@app.delete("/media/video/delete-by-id")
+def delete_video_by_id(video_id: int,current_user: dict = Depends(requireAdmin)):
+    try:
+        deleteVideosById(video_id)
+        return {"status": "ok", "message": "Video borrado correctamente"}
+    except Exception as e:
+        return HTTPException(status_code=500, detail=str(e))

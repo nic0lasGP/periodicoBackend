@@ -29,6 +29,8 @@ def getVideosByPost(post_id: int):
                 return cursor.fetchall()
     except Exception as e:
         raise e
+    
+
 def getVideosById(id: int):
     try:
         with get_connection() as connection:
@@ -38,6 +40,24 @@ def getVideosById(id: int):
                     (id,)
                 )
                 return cursor.fetchone()
+    except Exception as e:
+        raise e
+
+
+
+def deleteVideosById(id: int):
+    try:
+        with get_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """
+                    DELETE FROM videos
+                    WHERE id = %s
+                    """,
+                    (id,)
+                )
+                connection.commit()
+                return cursor.rowcount > 0
     except Exception as e:
         raise e
 

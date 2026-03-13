@@ -31,5 +31,6 @@ __all__ = [
     "updatePost",
     "uploadVideo",
     "getVideosByPost",
-    "getVideosById"
+    "getVideosById",
+    "deleteVideosById"
            ]

@@ -1,7 +1,9 @@
 from fastapi import APIRouter,HTTPException,Depends
 from app.services import *
-from app.models.admin import PostCreate
+from app.models.admin import PostCreate,PostUpdate
 from app.security import requireAdmin
+import zlib
+
 
 app = APIRouter(tags=['Admin'])
 
@@ -45,11 +47,12 @@ async def delete_post(id:int,current_user: dict = Depends(requireAdmin)):
 @app.post("/admin/create-post")
 async def create_post(data: PostCreate,current_user: dict = Depends(requireAdmin)):
     body_json = data.body.model_dump_json()
-    
+    body_compressed = zlib.compress(body_json.encode("utf-8"), level=9)
+
     try:
         createPost(
             title=data.title,
-            body=body_json,
+            body=body_compressed,
             user_id=data.user_id,
             section_id=data.section_id,
             slug=data.slug
@@ -60,8 +63,18 @@ async def create_post(data: PostCreate,current_user: dict = Depends(requireAdmin
     
 
 @app.patch("/admin/update-post")
-def update_post(post_id: int, title: str, slug: str, body: dict, section_id: int,current_user: dict = Depends(requireAdmin)):
-    result = updatePost(post_id, title, body, section_id, slug)
+def update_post(data: PostUpdate,current_user: dict = Depends(requireAdmin)):
+    body_json = data.body.model_dump_json()
+    body_compressed = zlib.compress(body_json.encode("utf-8"), level=9)
+
+    result = updatePost(
+        post_id=data.post_id,
+        title=data.title,
+        body=body_compressed,
+        user_id=data.user_id,
+        section_id=data.section_id,
+        slug=data.slug
+    )
     if not result:
         raise HTTPException(404, "Post no encontrado")
     return {"message": "Post actualizado correctamente"}
